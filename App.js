@@ -1,24 +1,40 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import { useState } from "react";
 import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
+import { NavigationContainer } from "@react-navigation/native";
+import { AppearanceProvider, useColorScheme } from "react-native-appearance";
+import { darkTheme, lightTheme } from "./theme";
+import { ThemeProvider } from "styled-components/native";
+import SharedTabNav from "./Navigator/SharedTabNav";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import client, { darkMode, isLoggedInVar, tokenVar } from "./apollo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
+  const colorScheme = useColorScheme();
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const onFinish = () => setLoading(false);
-  const preload = () => {
+  const preloadAssets = () => {
     const fontsToLoad = [Ionicons.font];
     const fontPromises = fontsToLoad.map((font) => Font.loadAsync(font));
-    const imagesToLoad = [
-      require("./assets/logo.png"),
-      "https://imgr.search.brave.com/8-0zkm9oMHpp5-TaumW4M0ZDCM6xCGN8fQwwt1ChKbQ/fit/1200/1200/ce/1/aHR0cHM6Ly93d3cu/cG5na2V5LmNvbS9w/bmcvZnVsbC80NTMt/NDUzNjA5MF9jb2Zm/ZWUtY3VwLWljb24t/cG5nLWhvdC1jb2Zm/ZWUtdmVjdG9yLXBu/Zy5wbmc",
-    ];
+    const imagesToLoad = [require("./assets/logo.png")];
     const imagePromises = imagesToLoad.map((image) => Asset.loadAsync(image));
-    return Promise.all(...fontPromises, ...imagePromises);
+    Promise.all(...fontPromises, ...imagePromises);
   };
+  const preload = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      isLoggedInVar(true);
+      tokenVar(token);
+    }
+    return preloadAssets();
+  };
+  if (colorScheme === "dark") {
+    darkMode(true);
+  }
   if (loading) {
     return (
       <AppLoading
@@ -29,18 +45,14 @@ export default function App() {
     );
   }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApolloProvider client={client}>
+      <AppearanceProvider>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+          <NavigationContainer>
+            <SharedTabNav isLoggedIn={isLoggedIn} />
+          </NavigationContainer>
+        </ThemeProvider>
+      </AppearanceProvider>
+    </ApolloProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
