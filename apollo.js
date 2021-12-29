@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, makeVar } from "@apollo/client";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const isLoggedInVar = makeVar(false);
@@ -26,18 +27,17 @@ export const logUserOut = async () => {
   }
 };
 
-export const toggleDarkMode = () => {
-  console.log(darkMode);
-  if (darkMode) {
-    darkMode(false);
-  } else {
-    darkMode(true);
-  }
-};
-
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          seeCoffeeShops: offsetLimitPagination(),
+        },
+      },
+    },
+  }),
 });
 
 export default client;

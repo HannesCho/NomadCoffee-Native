@@ -5,6 +5,7 @@ import LoggedOutNav from "./LoggedOutNav";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabIcon from "../components/TabIcon";
 import LoggedInNav from "./LoggedInNav";
+import SharedStackNav from "./SharedStackNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,23 +23,25 @@ export default function SharedTabNav({ isLoggedIn }) {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="TabHome"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"home"} color={color} focused={focused} />
           ),
         }}
-      ></Tab.Screen>
+      >
+        {() => <SharedStackNav screenName="Home" />}
+      </Tab.Screen>
       <Tab.Screen
-        name="Search"
-        component={Search}
+        name="TabSearch"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"search"} color={color} focused={focused} />
           ),
         }}
-      ></Tab.Screen>
+      >
+        {() => <SharedStackNav screenName="Search" />}
+      </Tab.Screen>
       <Tab.Screen
         name={isLoggedIn ? "LoggedInNav" : "LoggedOutNav"}
         component={isLoggedIn ? LoggedInNav : LoggedOutNav}
