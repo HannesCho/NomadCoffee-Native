@@ -9,20 +9,6 @@ const HOME_QUERY = gql`
     seeCoffeeShops(lastId: $lastId) {
       id
       name
-      latitude
-      longitude
-      user {
-        username
-        avatarURL
-      }
-      photos {
-        id
-        url
-      }
-      categories {
-        id
-        name
-      }
     }
   }
 `;
@@ -73,11 +59,12 @@ const coffeeShops = [
 ];
 
 export default function Home() {
-  const { data, loading } = useQuery(HOME_QUERY, {
+  const { data, loading, fetchMore, refetch } = useQuery(HOME_QUERY, {
     variables: {
       lastId: 0,
     },
   });
+  console.log(data);
   const renderShop = ({ item: shop }) => {
     return <Shop {...shop} />;
   };

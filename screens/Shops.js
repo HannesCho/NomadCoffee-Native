@@ -40,17 +40,9 @@ const Likes = styled.Text`
   color: pink;
 `;
 
-export default function Shop({
-  id,
-  name,
-  photos,
-  user,
-  latitude,
-  longitude,
-  categories,
-}) {
+export default function Shop({ id, name, photos, user, categories }) {
   const navigation = useNavigation();
-  const photo = photos[0]?.url;
+  const photo = photos ? photos[0]?.url : null;
   const { width, height } = useWindowDimensions();
   const [imageHeight, setImageHeight] = useState(height - 500);
   useEffect(() => {
@@ -66,7 +58,7 @@ export default function Shop({
           source={{ uri: user?.avatar }}
           style={{ width: 30, height: 30, borderRadius: 25 }}
         />
-        <Username>{user.username}</Username>
+        <Username>{user ? user.username : null}</Username>
       </Header>
       <File
         resizeMode="cover"
@@ -74,7 +66,7 @@ export default function Shop({
           width,
           height: imageHeight,
         }}
-        source={{ uri: photo }}
+        source={{ uri: photo ? photo : null }}
       />
       <Actions>
         <Action>
