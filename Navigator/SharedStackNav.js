@@ -4,9 +4,8 @@ import Photo from "../screens/Photo";
 import Profile from "../screens/Profile";
 import Home from "../screens/Home";
 import Search from "../screens/Search";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 import Comments from "../screens/Comments";
-import Camera from "../screens/Camera";
 
 const Stack = createStackNavigator();
 
@@ -63,7 +62,7 @@ export default function SharedStackNav({ screenName }) {
       {screenName === "Camera" ? (
         <Stack.Screen
           name={"Camera"}
-          component={Camera}
+          component={View}
           options={{
             headerTitle: () => (
               <Image
