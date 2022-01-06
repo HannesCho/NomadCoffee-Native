@@ -3,8 +3,9 @@ import styled from "styled-components/native";
 import { Camera } from "expo-camera";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
-import { Alert, Image, TouchableOpacity } from "react-native";
+import { Alert, Image, TouchableOpacity, View } from "react-native";
 import * as MediaLibrary from "expo-media-library";
+import { useIsFocused } from "@react-navigation/native";
 
 const CameraContainer = styled.View`
   flex: 1;
@@ -142,7 +143,7 @@ export default function TakePhoto({ navigation }) {
   };
 
   const onDismiss = () => setTakenPhoto("");
-
+  const isFocused = useIsFocused();
   return (
     <CameraContainer>
       {ok === false ? (
@@ -151,18 +152,22 @@ export default function TakePhoto({ navigation }) {
         </PermissionContainer>
       ) : takenPhoto === "" ? (
         <>
-          <Camera
-            type={cameraType}
-            style={{ flex: 1 }}
-            zoom={zoom}
-            flashMode={flashMode}
-            ref={camera}
-            onCameraReady={onCameraReady}
-          >
-            <CloseButton onPress={() => navigation.navigate("Tabs")}>
-              <Ionicons name="close" color="white" size={40} />
-            </CloseButton>
-          </Camera>
+          {isFocused ? (
+            <Camera
+              type={cameraType}
+              style={{ flex: 1 }}
+              zoom={zoom}
+              flashMode={flashMode}
+              ref={camera}
+              onCameraReady={onCameraReady}
+            >
+              <CloseButton onPress={() => navigation.navigate("Tabs")}>
+                <Ionicons name="close" color="white" size={40} />
+              </CloseButton>
+            </Camera>
+          ) : (
+            <View style={{ flex: 1 }}></View>
+          )}
           <Actions>
             <SliderContainer>
               <Slider
