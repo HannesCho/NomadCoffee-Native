@@ -19,7 +19,6 @@ export default function Home() {
       lastId: 0,
     },
   });
-  console.log(data);
   const renderShop = ({ item: shop }) => {
     return <Shop {...shop} />;
   };
