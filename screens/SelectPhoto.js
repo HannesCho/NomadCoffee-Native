@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import * as MediaLibrary from "expo-media-library";
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList, Image, useWindowDimensions } from "react-native";
+import {
+  FlatList,
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 
 const PhotoContainer = styled.View`
   flex: 1;
@@ -25,7 +30,14 @@ const IconContainer = styled.View`
   right: 0px;
 `;
 
-export default function SelectPhoto() {
+const HeaderRightText = styled.Text`
+  color: #0095f6;
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 7px;
+`;
+
+export default function SelectPhoto({ navigation }) {
   const [ok, setOk] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState("");
@@ -48,9 +60,28 @@ export default function SelectPhoto() {
       getPhotos();
     }
   };
+
+  const HeaderRight = () => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("UploadForm", {
+          file: chosenPhoto,
+        })
+      }
+    >
+      <HeaderRightText>Next</HeaderRightText>
+    </TouchableOpacity>
+  );
+
   useEffect(() => {
     getPermissions();
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: HeaderRight,
+    });
+  }, [chosenPhoto]);
 
   const numColumns = 4;
   const { width } = useWindowDimensions();
